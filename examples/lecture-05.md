@@ -110,7 +110,7 @@ inspect them visually.
 
 ### Listing Properties
 
-The `utils::str()` function gives us a chance to preivew the data in
+The `utils::str()` function gives us a chance to preview the data in
 terms of variable names and the a quick snapshot of the data each
 variable contains. We can do this for the `city` data:
 
@@ -167,7 +167,7 @@ str(nhoods)
 ### Visually Inspecting Objects
 
 We can also visually inspect the tabular data by clicking on objects in
-the Enviornment tab or, alternatively, using `View()` in the console -
+the Environment tab or, alternatively, using `View()` in the console -
 `View(city)`. To get a preview of the spatial data, we can use the
 `mapview` package’s `mapview()` function. Once the map is created, we
 can alter the basemap by clicking the icon under the zoom in and out
@@ -395,7 +395,7 @@ nhoods84 %>%
 
 ### Mapping Quantities with `leaflet`
 
-If we want to turn this into a themeatic choropleth map, we can add some
+If we want to turn this into a thematic choropleth map, we can add some
 additional parameters to the `addPolygons()` function. The options
 included here are:
 
@@ -474,13 +474,13 @@ The colors come from the `RColorBrewer` package. We can use
 display.brewer.all(type = "seq")
 ```
 
-![](lecture-05_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+![](lecture-05_files/figure-gfm/display-brewer-1.png)<!-- -->
 
 We’ll try the `YlGnBu` palette on this next map, which normalizes the
 data but dividing our `AREA` variable (which is the area of each
 neighborhood in square meters) by `1000000`to convert to square
-kilometers. We use the `/` mathmatical operator to divide our values,
-and paraentheses to ensure order of operations is respected. We add a
+kilometers. We use the `/` mathematical operator to divide our values,
+and parentheses to ensure order of operations is respected. We add a
 corresponding value to our popup as well:
 
 ``` r
@@ -538,9 +538,9 @@ nhoods84 %>%
 
 ![](lecture-05_files/figure-gfm/leaflet-nhoods6-1.png)<!-- -->
 
-## Managing Our Enviornment
+## Managing Our Environment
 
-With GIS work, our enviornment gets cluttered. As I work on an analysis,
+With GIS work, our environment gets cluttered. As I work on an analysis,
 I find it useful to remove objects once I know that I am done with them.
 We use the `base::rm()` function to do this:
 
@@ -576,7 +576,7 @@ ggplot() +
 You can see empty spaces where there are major parks - if we wanted to
 give these a background color, we could add the `city` layer under our
 `nhoods` layer. We can also add the `city` layer again on top to give
-the city border a pronouced outline. `ggplot2` relies on layering
+the city border a pronounced outline. `ggplot2` relies on layering
 different geoms to produce complicated plots. We can assign each geom a
 specific set of aesthetic characteristics and use data from different
 objects.
@@ -616,7 +616,7 @@ ggplot_17_1
 ![](lecture-05_files/figure-gfm/ggplot2-nhood1-1.png)<!-- -->
 
 This map also stores our `ggplot` object in its own space in our global
-enviornment. This allows us the ability to update it later, and to more
+environment. This allows us the ability to update it later, and to more
 easily save it.
 
 ### Creating Map Layouts with `ggplot2`
@@ -746,7 +746,7 @@ ggsave(here("examples", "results", "ggplot2_popDensity17_2.png"), ggplot_17_5, d
 
     ## Saving 7 x 5 in image
 
-### Clean-up Enviornment Again
+### Clean-up Environment Again
 
 We’ll get rid of the `ggplot2` objects we’ve created:
 
@@ -764,8 +764,8 @@ data, however, and has some features that `ggplot2` does not.
 
 We’ll start with a basic map that, like we have previously, just display
 the geometry of the city’s neighborhoods. Similar to `ggplot2`,
-functions are chainted together with the `+` sign. We can read these
-like paragraphs:
+functions are chained together with the `+` sign. We can read these like
+paragraphs:
 
 1.  First, we take the `nhoods` data, **then**
 2.  we create our `tmap` layer out of its shape, **then**
@@ -875,7 +875,7 @@ discussed with `ggplot2` as well:
 
 ``` r
 tm_shape(city) +
-  tm_fill(fill = "ebebeb") + 
+  tm_fill(fill = "#ebebeb") + 
   tm_shape(nhoods) +
   tm_polygons(col = "pop17", 
               palette = "viridis", 
@@ -890,14 +890,14 @@ tm_shape(city) +
 ![](lecture-05_files/figure-gfm/tmap-add-background-1.png)<!-- -->
 
 Notice how we have to add each layer using `tm_shape()` before beginning
-to modify its astheic properties.
+to modify its atheistic properties.
 
 We can also add adornments to our map layouts, including a scale bar
 (with `tm_scale_bar()`):
 
 ``` r
 tm_shape(city) +
-  tm_fill(fill = "ebebeb") + 
+  tm_fill(fill = "#ebebeb") + 
   tm_shape(nhoods) +
   tm_polygons(col = "pop17", 
               palette = "viridis", 
@@ -918,13 +918,13 @@ title and move the legend if necessary.
 ``` r
 # create tmap object
 tm_shape(city) +
-  tm_fill(fill = "ebebeb") + 
+  tm_fill(fill = "#ebebeb") + 
   tm_shape(nhoods) +
   tm_polygons(col = "pop17", 
               palette = "viridis", 
               style = "jenks",
               convert2density = TRUE,
-              title = "Population per\nSquare Kilomer") +
+              title = "Population per\nSquare Kilometer") +
   tm_shape(city) +
   tm_borders(lwd = 2) +
   tm_scale_bar() +
@@ -965,13 +965,13 @@ the mapped variable to the legend as well. This is done by adding
 ``` r
 # create tmap object
 tm_shape(city) +
-  tm_fill(fill = "ebebeb") + 
+  tm_fill(fill = "#ebebeb") + 
   tm_shape(nhoods) +
   tm_polygons(col = "pop17", 
               palette = "GnBu", 
               style = "jenks",
               convert2density = TRUE,
-              title = "Population per\nSquare Kilomer",
+              title = "Population per\nSquare Kilometer",
               legend.hist = TRUE) +
   tm_shape(city) +
   tm_borders(lwd = 2) +

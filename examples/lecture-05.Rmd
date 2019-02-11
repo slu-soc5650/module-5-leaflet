@@ -65,7 +65,7 @@ nhoods84 <- st_transform(nhoods, crs = 4326)
 There are two ways we can explore our data - we can inspect them using functions that print particular properties of each object, and we can inspect them visually. 
 
 ### Listing Properties
-The `utils::str()` function gives us a chance to preivew the data in terms of variable names and the a quick snapshot of the data each variable contains. We can do this for the `city` data:
+The `utils::str()` function gives us a chance to preview the data in terms of variable names and the a quick snapshot of the data each variable contains. We can do this for the `city` data:
 
 ```{r city-str}
 str(city)
@@ -79,7 +79,7 @@ str(nhoods)
 
 ### Visually Inspecting Objects
 
-We can also visually inspect the tabular data by clicking on objects in the Enviornment tab or, alternatively, using `View()` in the console - `View(city)`. To get a preview of the spatial data, we can use the `mapview` package's `mapview()` function. Once the map is created, we can alter the basemap by clicking the icon under the zoom in and out buttons. We can preview the tabular data for each feature by clicking on it:
+We can also visually inspect the tabular data by clicking on objects in the Environment tab or, alternatively, using `View()` in the console - `View(city)`. To get a preview of the spatial data, we can use the `mapview` package's `mapview()` function. Once the map is created, we can alter the basemap by clicking the icon under the zoom in and out buttons. We can preview the tabular data for each feature by clicking on it:
 
 ```{r city-view}
 mapview(city)
@@ -135,7 +135,7 @@ nhoods84 %>%
 
 ### Mapping Quantities with `leaflet`
 
-If we want to turn this into a themeatic choropleth map, we can add some additional parameters to the `addPolygons()` function. The options included here are:
+If we want to turn this into a thematic choropleth map, we can add some additional parameters to the `addPolygons()` function. The options included here are:
 
 * `color` - outline ("stroke") color for each polygon
 * `weight` - stroke width
@@ -194,11 +194,11 @@ nhoods84 %>%
 
 The colors come from the `RColorBrewer` package. We can use `RColorBrewer::display.brewer.all()` to identify other color ramps:
 
-```{r}
+```{r display-brewer}
 display.brewer.all(type = "seq")
 ```
 
-We'll try the `YlGnBu` palette on this next map, which normalizes the data but dividing our `AREA` variable (which is the area of each neighborhood in square meters) by `1000000`to convert to square kilometers. We use the `/` mathmatical operator to divide our values, and paraentheses to ensure order of operations is respected. We add a corresponding value to our popup as well:
+We'll try the `YlGnBu` palette on this next map, which normalizes the data but dividing our `AREA` variable (which is the area of each neighborhood in square meters) by `1000000`to convert to square kilometers. We use the `/` mathematical operator to divide our values, and parentheses to ensure order of operations is respected. We add a corresponding value to our popup as well:
 
 ```{r leaflet-nhoods5}
 # create color palette
@@ -250,8 +250,8 @@ nhoods84 %>%
               title = "Population Density (1950)")
 ```
 
-## Managing Our Enviornment
-With GIS work, our enviornment gets cluttered. As I work on an analysis, I find it useful to remove objects once I know that I am done with them. We use the `base::rm()` function to do this:
+## Managing Our Environment
+With GIS work, our environment gets cluttered. As I work on an analysis, I find it useful to remove objects once I know that I am done with them. We use the `base::rm()` function to do this:
 
 ```{r remove-wgs84-objects}
 rm(city84, nhoods84, npal)
@@ -271,7 +271,7 @@ ggplot() +
   geom_sf(data = nhoods, fill = "#bababa")
 ```
 
-You can see empty spaces where there are major parks - if we wanted to give these a background color, we could add the `city` layer under our `nhoods` layer. We can also add the `city` layer again on top to give the city border a pronouced outline. `ggplot2` relies on layering different geoms to produce complicated plots. We can assign each geom a specific set of aesthetic characteristics and use data from different objects.
+You can see empty spaces where there are major parks - if we wanted to give these a background color, we could add the `city` layer under our `nhoods` layer. We can also add the `city` layer again on top to give the city border a pronounced outline. `ggplot2` relies on layering different geoms to produce complicated plots. We can assign each geom a specific set of aesthetic characteristics and use data from different objects.
 
 ```{r ggplot2-nhoodSimple2}
 ggplot() +
@@ -295,7 +295,7 @@ ggplot() +
 ggplot_17_1
 ```
 
-This map also stores our `ggplot` object in its own space in our global enviornment. This allows us the ability to update it later, and to more easily save it.
+This map also stores our `ggplot` object in its own space in our global environment. This allows us the ability to update it later, and to more easily save it.
 
 ### Creating Map Layouts with `ggplot2`
 
@@ -399,7 +399,7 @@ To save our map, we again use the `ggsave()` function:
 ggsave(here("examples", "results", "ggplot2_popDensity17_2.png"), ggplot_17_5, dpi = 500)
 ```
 
-### Clean-up Enviornment Again
+### Clean-up Environment Again
 We'll get rid of the `ggplot2` objects we've created:
 
 ```{r clean-up-ggplot2-objects}
@@ -410,7 +410,7 @@ rm(ggplot_17_1, ggplot_17_2, ggplot_17_3, ggplot_17_4, ggplot_17_5)
 `tmap` uses a similar logic to `ggplot2` - it layers elements on top of each other to produce maps. It is dedicated to working with spatial data, however, and has some features that `ggplot2` does not. 
 
 ### Basic Mapping of Geometric Objects
-We'll start with a basic map that, like we have previously, just display the geometry of the city's neighborhoods. Similar to `ggplot2`, functions are chainted together with the `+` sign. We can read these like paragraphs:
+We'll start with a basic map that, like we have previously, just display the geometry of the city's neighborhoods. Similar to `ggplot2`, functions are chained together with the `+` sign. We can read these like paragraphs:
 
 1. First, we take the `nhoods` data, **then**
 2. we create our `tmap` layer out of its shape, **then**
@@ -481,7 +481,7 @@ Once we have a map we like, we can begin to build a layout around it. Like with 
 
 ```{r tmap-add-background}
 tm_shape(city) +
-  tm_fill(fill = "ebebeb") + 
+  tm_fill(fill = "#ebebeb") + 
   tm_shape(nhoods) +
   tm_polygons(col = "pop17", 
               palette = "viridis", 
@@ -491,13 +491,13 @@ tm_shape(city) +
   tm_borders(lwd = 2)
 ```
 
-Notice how we have to add each layer using `tm_shape()` before beginning to modify its astheic properties.
+Notice how we have to add each layer using `tm_shape()` before beginning to modify its atheistic properties.
 
 We can also add adornments to our map layouts, including a scale bar (with `tm_scale_bar()`):
 
 ```{r tmap-add-scale-bar}
 tm_shape(city) +
-  tm_fill(fill = "ebebeb") + 
+  tm_fill(fill = "#ebebeb") + 
   tm_shape(nhoods) +
   tm_polygons(col = "pop17", 
               palette = "viridis", 
@@ -513,13 +513,13 @@ Once we have a layout that we like, we can use `tm_layout()` to add a title and 
 ```{r tmap-layout1}
 # create tmap object
 tm_shape(city) +
-  tm_fill(fill = "ebebeb") + 
+  tm_fill(fill = "#ebebeb") + 
   tm_shape(nhoods) +
   tm_polygons(col = "pop17", 
               palette = "viridis", 
               style = "jenks",
               convert2density = TRUE,
-              title = "Population per\nSquare Kilomer") +
+              title = "Population per\nSquare Kilometer") +
   tm_shape(city) +
   tm_borders(lwd = 2) +
   tm_scale_bar() +
@@ -545,13 +545,13 @@ One neat feature that `tmap` has is the ability to add a histogram of the mapped
 ```{r tmap-layout2}
 # create tmap object
 tm_shape(city) +
-  tm_fill(fill = "ebebeb") + 
+  tm_fill(fill = "#ebebeb") + 
   tm_shape(nhoods) +
   tm_polygons(col = "pop17", 
               palette = "GnBu", 
               style = "jenks",
               convert2density = TRUE,
-              title = "Population per\nSquare Kilomer",
+              title = "Population per\nSquare Kilometer",
               legend.hist = TRUE) +
   tm_shape(city) +
   tm_borders(lwd = 2) +
@@ -574,5 +574,7 @@ tmap_save(tm = tmap_17_2, filename = here("examples", "results", "tamp_popDensit
 
 ```{r move-to-docs, include=FALSE}
 # you do need to include this in any notebook you create for this class
-fs::file_copy(here::here("examples", "lecture-05.nb.html"), here::here("docs", "index.nb.html"))
+fs::file_copy(here::here("examples", "lecture-05.nb.html"), 
+              here::here("docs", "index.nb.html"), 
+              overwrite = TRUE)
 ```
