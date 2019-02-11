@@ -571,3 +571,8 @@ Once again, we can save this using `tmap_save()`:
 ```{r tmap-save-layout2}
 tmap_save(tm = tmap_17_2, filename = here("examples", "results", "tamp_popDensity17_2.png"), dpi = 500)
 ```
+
+```{r move-to-docs, include=FALSE}
+# you do need to include this in any notebook you create for this class
+fs::file_copy(here::here("examples", "lecture-05.nb.html"), here::here("docs", "index.nb.html"))
+```
