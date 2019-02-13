@@ -21,7 +21,7 @@
 % ========================================================
 
 % define the title
-\title{SOC 4650/5650: Lab-04 - Mapping Structures at Risk of Severe Weather Using R}
+\title{SOC 4650/5650: Lab-04 - Interactive Mapping of Structures at Risk}
 \author{Christopher Prener, Ph.D.}
 \date{Fall 2018}
 % =======================================================
@@ -67,12 +67,12 @@ The goal of this section is to create a self contained project directory with al
 \subsection{Load Data}
 \begin{enumerate}[label=\alph*.]
 \setcounter{enumi}{9}
-\item Import the files \texttt{METRO\_STRUCTURE\_PctMobileHome.shp} and \\ \texttt{METRO\_BOUNDARY\_Counties.shp} into your global environment.
+\item Import the files \texttt{METRO\_STRUCTURE\_PctMobileHome.shp} into your global environment.
 \end{enumerate}
 
 \vspace{5mm}
 \section{Part 1: Data Exploration}
-The goal of this section is to create an interactive map using \texttt{leaflet}. 
+The goal of this section is to initially explore the data. 
 \begin{enumerate}
 \item List the variables in the mobile home data using \texttt{str()}.
 \item Produce an interactive visual preview of the data using the \texttt{mapview} package.
@@ -85,26 +85,6 @@ The goal of this section is to create an interactive map using \texttt{leaflet}.
 \setcounter{enumi}{2}
 \item Use \texttt{names(providers)} to identify a basemap to use for your map.
 \item Using a color ramp and basemap of your choice, symbolize the percentage of mobile homes in each county. Add a popup that has the county name as well as the percentage of mobile homes in that county on separate lines. The popup should be formatted like the ones we created during the lecture, with bold labels on separate lines for each characteristic on the pop-up. Your map should also have a legend and the legend's name should be edited for clarity. \sidenote{\textit{Hint:} There is no need to export this - make sure you have PhantomJS installed on your computer and it will be included in your final, knit document.}
-\end{enumerate}
-
-\vspace{5mm}
-\section{Part 3: Static Mapping for Digital Use}
-The goal of this section is to create a static map using \texttt{ggplot2}. 
-\begin{enumerate}
-\setcounter{enumi}{4}
-\item Using a color ramp of your choice (though it should be different from your interactive map), symbolize the percentage of mobile homes in each county. Use the metro counties boundary layer overlaid on your choropleth layer to more clearly mark the county boundaries. Make sure you edit your legend's title and add a title, subtitle, and a caption to the plot. Your caption should include your name.
-\item Export your map as a \texttt{.png} file (suitable for use online or in another digital medium) at \texttt{500} dots per inch. Make sure your map is saved to the \texttt{results} subfolder of your project.
-\end{enumerate}
-
-\vspace{5mm}
-\section{Part 4: Static Mapping for Print Use}
-The goal of this section is to create a static map using \texttt{tmap}. 
-\begin{enumerate}
-\setcounter{enumi}{6}
-\item Using a color ramp of your choice (though it should be different than your prior two maps), symbolize the percentage of mobile homes in each county. Use the metro counties boundary layer overlaid on your choropleth layer to more clearly mark the county boundaries. Make sure you edit your legend's title and add a title, and scalebar to the plot.
-\item Export your map as a \texttt{.pdf} file (suitable for print) at \texttt{500} dots per inch. Make sure your map is saved to the \texttt{results} subfolder of your project.
-\item Adapt the code from Question 7 and add a histogram to your legend. Again, use a different color ramp for your data than you have used previously. If you have yet to use \texttt{RColorBrewer} or \texttt{viridis}, use a palette from the unused package here.
-\item Export your map as a \texttt{.pdf} file (suitable for print) at \texttt{500} dots per inch. Make sure your map is saved to the \texttt{results} subfolder of your project.
 \end{enumerate}
 
 \vspace{5mm}
