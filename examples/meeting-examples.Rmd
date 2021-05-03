@@ -1,0 +1,181 @@
+---
+title: "Meeting Examples"
+author: "Christopher Prener, Ph.D."
+date: '(`r format(Sys.time(), "%B %d, %Y")`)'
+output: 
+  html_document: default
+  github_document: default
+---
+
+## Introduction
+This notebook covers interactive map production in `R` using the `leflet` library. We'll review some of what we discussed during [the first course meeting](https://slu-soc5650.github.io/docs/meeting_01/) and then introduce some additional complexity with `leaflet`.
+
+## Dependencies
+This notebook requires a variety of packages for working with spatial data:
+
+```{r load-packages}
+# tidyverse packages
+library(dplyr)        # data wrangling
+
+# spatial packages
+library(leaflet)      # interactive maps
+library(mapview)      # preview spatial data
+library(sf)           # spatial data tools
+
+# other packages
+library(here)         # file path management
+library(measurements) # convert units
+library(RColorBrewer) # color palettes
+```
+
+## Load Data
+This notebook requires the data stored in `data/example-data/`. We'll automatically convert these to WGS84 for mapping, since this is the coordinate system they require:
+
+```{r load-data}
+city <- st_read(here("data", "example-data", "STL_BOUNDARY_City", "STL_BOUNDARY_City.shp"), stringsAsFactors = FALSE) %>%
+  st_transform(crs = 4326)
+nhoods <- st_read(here("data", "example-data", "STL_DEMOS_Nhoods", "STL_DEMOS_Nhoods.shp"), stringsAsFactors = FALSE) %>%
+  st_transform(crs = 4326)
+```
+
+## Interactive Mapping with `leaflet` (Module 1 review)
+### Basic Mapping of Geometric Objects
+During our first course meeting, we discussed the creation of interactive maps using the `leaflet` package. [Leaflet](https://leafletjs.com) is a JavaScript library for creating interactive maps. It is primarily focused on web and mobile mapping. The `leaflet` package for `R` provides access to the JavaScript library. 
+
+Leaflet provides a number of basemaps for mapping. If you add map tiles using `addTiles()`, you'll get the open street map basemap. Other basemaps can be added using `addProviderTiles()`. The names of available options can be found using:
+
+```{r leaflet-names}
+names(providers)
+```
+
+As you can see, there are a ton of choices! We'll use `CartoDB.Positron` here, but feel free to pick one that you like for assignments if we don't specify what you should use. Make sure that your other cartographic selections, such as color, do not clash with your basemap. 
+
+The basic `leaflet` workflow involves piping functions together (the `%>%` operator). Each time to see the pipe, think of the word "then." For example, the following code chunk would read:
+
+1.Take the `city` object, **then**
+2. use it as the basis for creating a `leaflet` object with `leaflet()`, **then**
+3. add a basemap using the `CartoDB.Positron` tiles, **then**
+4. add polygons and create a pop-up.
+
+```{r leaflet-city}
+city %>%
+  leaflet() %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addPolygons(popup = ~NAME)
+```
+
+### Adding Pop-ups
+
+We can get more into the weeds with the neighborhood data since they have additional features. We can create more detailed pop-ups using the `base::paste()` function and some html tags. The most important html tags to know are:
+
+* `<b>text</b>` - bold text
+* `<em>text</em>` - italicized text
+* `<br>` - line break
+
+```{r leaflet-nhoods}
+nhoods %>%  
+  leaflet() %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addPolygons(
+    
+  )
+```
+
+### Mapping Quantities with `leaflet`
+
+If we want to turn this into a thematic choropleth map, we can add some additional parameters to the `addPolygons()` function. Before we do that, however, we should create normalized versions of our two population variables, `pop50` and `pop17`. We can use the `AREA` column, which represents the area of each neighborhood in square meters, as a basis for this.
+
+```{r normalize}
+nhoods %>%
+  mutate(sq_km = conv_unit(AREA, from = "m2", to = "km2"), .after = "AREA") %>%
+  mutate(pop50_den = pop50/sq_km, .after = "pop50") %>%
+  mutate(pop17_den = pop17/sq_km, .after = "pop17") -> nhoods
+```
+
+Now that we have these normalized, we can get mapping! The additional cartographic options we'll mention are:
+
+* `color` - outline ("stroke") color for each polygon
+* `weight` - stroke width
+* `opacity` - stroke opacity
+* `smoothFactor` - allows `leaflet` to simplify polygons depending on zoom
+* `fillOpacity` - fill opacity
+* `fillColor` - creates the fill itself
+* `highlightOptions` - creates effect when mouse drags over specific polygons
+
+What I have here are good default settings for most of these options, but feel free to experiment!
+
+When we created our pop-up, we want to round our values so that we don't see the very long real number associated with our data. By using `base::round(var, digits = 0)`, we round to the nearest integer. `digits = 2` would give us two decimal places in contrast.
+
+```{r leaflet-nhoods3}
+# create color palette
+npal <- colorNumeric("YlOrRd", nhoods$pop17_den)
+
+# create leaflet object
+nhoods %>%
+  leaflet() %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addPolygons(
+    
+  ) 
+```
+
+Next, we should add a legend to make the map easier to interpret. This is done with the `addLegend()` argument. The `opacity` argument in `addLegend()` should match the `fillOpacity` argument in `addPolygons()`!
+
+```{r leaflet-nhoods4}
+# create color palette
+npal <- colorNumeric("YlOrRd", nhoods$pop17_den)
+
+# create leaflet object
+nhoods %>%
+  leaflet() %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addPolygons(
+    color = "#444444", 
+    weight = 1, 
+    opacity = 1.0, 
+    smoothFactor = 0.5,
+    fillOpacity = 0.5,
+    fillColor = ~npal(pop17_den),
+    highlightOptions = highlightOptions(color = "white", weight = 2, bringToFront = TRUE),
+    popup = paste("<b>Name:</b> ", nhoods$NHD_NAME, "<br>",
+                  "<b>2017 Population:</b> ", round(nhoods$pop17, digits = 0), "<br>",
+                  "<b>2017 Population per Square Kilometer:</b> ", round(nhoods$pop17_den, digits = 2)))
+```
+
+As a review, the color palette we're using comes from the `RColorBrewer` package. We can use `RColorBrewer::display.brewer.all()` to identify other color ramps:
+
+```{r display-brewer}
+display.brewer.all(type = "seq")
+```
+
+One final complication we'll discuss is adding the city's outline on top of the `addPolygons()` function. We can't use a second instance of `addPolygons()` in our call, and so we'll use the `addPolylines()` function instead. This allows us to display the boundary as a line instead of a polygon feature. 
+
+```{r leaflet-nhoods5}
+# create color palette
+npal <- colorNumeric( , nhoods$pop17_den)
+
+# create leaflet object
+nhoods %>%
+  leaflet() %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addPolygons(
+    color = "#444444", 
+    weight = 1, 
+    opacity = 1.0, 
+    smoothFactor = 0.5,
+    fillOpacity = 0.5,
+    fillColor = ~npal(pop17_den),
+    highlightOptions = highlightOptions(color = "white", weight = 2, bringToFront = TRUE),
+    popup = paste("<b>Name:</b> ", nhoods$NHD_NAME, "<br>",
+                  "<b>2017 Population:</b> ", round(nhoods$pop17, digits = 0), "<br>",
+                  "<b>2017 Population per Square Kilometer:</b> ", round(nhoods$pop17_den, digits = 2))) %>%
+  
+    addLegend(pal = npal, values = ~pop17_den, opacity = .5, title = "Population Density (2017)")
+```
+
+For our final `leaflet` map, write your own code to map the 1950 population density of neighborhoods:
+
+```{r leaflet-nhoods6}
+
+```
+
